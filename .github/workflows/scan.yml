@@ -25,8 +25,9 @@ jobs:
           VERSION=$(curl -fsSL https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
             | grep -m1 '"tag_name"' | cut -d'"' -f4 | sed 's/^v//')
           curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" \
-            | tar xz gitleaks
-          sudo install -m 0755 gitleaks /usr/local/bin/gitleaks
+            -o /tmp/gitleaks.tgz
+          tar -xzf /tmp/gitleaks.tgz -C /tmp gitleaks
+          sudo install -m 0755 /tmp/gitleaks /usr/local/bin/gitleaks
           gitleaks version
 
       - name: Scan repo + full git history
