@@ -4,6 +4,14 @@
 
 Built by Rochester Hills Public Library (RHPL). Reference deployment lives at `databases.rhpl.org`, embedded into the library's Wix site at `rhpl.org/research-databases`. **Free to run** — fits inside GCP's free tier (~$0/month at the RHPL scale of ~74 databases and a typical library's traffic).
 
+> [!IMPORTANT]
+> **This service is currently in beta at RHPL.**
+> - **Back end** (Cloud Run + Firestore catalog) — live at `databases.rhpl.org`. Staff actively edit the catalog there.
+> - **Patron-facing iframe** — currently embedded on RHPL's Wix testing server at [vegapromoteweb.wixstudio.com/rhpl-studio/databases-iframe](https://vegapromoteweb.wixstudio.com/rhpl-studio/databases-iframe) while we work with the database vendors to whitelist `databases.rhpl.org` as the incoming referrer (the patron's browser sends it as the Referer header on launch) in addition to the existing `rhpl.org` / `catalog.rhpl.org` entries on their authentication allow-lists.
+> - **Production cutover** — once the last vendor confirms the new domain, the iframe migrates to [rhpl.org/research-databases](https://www.rhpl.org/research-databases).
+>
+> Everything described below already works on the back end; only the *where the iframe is embedded* changes between beta and production.
+
 ---
 
 ## What patrons see
