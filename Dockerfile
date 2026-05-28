@@ -3,9 +3,10 @@
 
 FROM python:3.12-slim AS builder
 WORKDIR /build
-RUN pip install --no-cache-dir --upgrade pip
-COPY requirements.txt ./
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+COPY pyproject.toml ./
+COPY src/ ./src/
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --prefix=/install .
 
 FROM python:3.12-slim
 
@@ -16,10 +17,8 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app
 COPY --from=builder /install /usr/local
 
-# Application code only — see .dockerignore for what is excluded
-# (migrate/, tests/, .env, .venv, ...).
-COPY *.py ./
-COPY routes/ ./routes/
+# Templates and static files live at the repo root and are loaded by Flask
+# at runtime via the explicit paths set in src/esources/main.py.
 COPY templates/ ./templates/
 COPY static/ ./static/
 
@@ -28,4 +27,4 @@ USER app
 
 EXPOSE 8080
 # 2 workers is ample for this traffic; Cloud Run scales out by instance.
-CMD exec gunicorn --bind 0.0.0.0:${PORT} --workers 2 --timeout 60 app:app
+CMD exec gunicorn --bind 0.0.0.0:${PORT} --workers 2 --timeout 60 esources.main:app

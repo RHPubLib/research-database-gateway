@@ -22,11 +22,11 @@ import time
 from flask import (Blueprint, current_app, make_response, redirect,
                    render_template, request, session, url_for)
 
-from crypto import CryptoError
-from gateway import (DENY_OFFSITE, DENY_PATRON_CODE, GRANT, LOGIN,
+from ..crypto import CryptoError
+from ..gateway import (DENY_OFFSITE, DENY_PATRON_CODE, GRANT, LOGIN,
                      decide_access)
-from ip_check import client_ip, is_on_campus, raw_forwarded_for
-from papi_client import PapiError
+from ..ip_check import client_ip, is_on_campus, raw_forwarded_for
+from ..papi_client import PapiError
 
 log = logging.getLogger("esources.public")
 bp = Blueprint("public", __name__)

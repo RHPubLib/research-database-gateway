@@ -3,7 +3,7 @@
 No network: these exercise the pure signing logic and the PapiResponse
 success/error semantics.
 """
-from papi_client import (ERR_INVALID_PASSWORD, ERR_PATRON_NOT_FOUND,
+from esources.papi_client import (ERR_INVALID_PASSWORD, ERR_PATRON_NOT_FOUND,
                          PapiClient, PapiResponse)
 
 

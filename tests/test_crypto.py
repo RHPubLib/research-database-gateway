@@ -2,7 +2,7 @@
 import pytest
 from cryptography.fernet import Fernet
 
-from crypto import CryptoError, VendorCrypto
+from esources.crypto import CryptoError, VendorCrypto
 
 KEY = Fernet.generate_key().decode()
 

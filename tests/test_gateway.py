@@ -3,7 +3,7 @@
 Covers all 3 in_house_access values x 3 remote_access values x patron-code
 block-list permutations. Keep this file fast (pure Python, no I/O).
 """
-from gateway import (ACCESS_CARD, ACCESS_IP_ONLY, ACCESS_OPEN, DENY_OFFSITE,
+from esources.gateway import (ACCESS_CARD, ACCESS_IP_ONLY, ACCESS_OPEN, DENY_OFFSITE,
                      DENY_PATRON_CODE, GRANT, LOGIN, decide_access)
 
 

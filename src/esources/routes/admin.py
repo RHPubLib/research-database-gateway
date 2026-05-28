@@ -12,7 +12,7 @@ from functools import wraps
 from flask import (Blueprint, abort, current_app, flash, redirect,
                    render_template, request, session, url_for)
 
-from util import is_http_url, slugify, unique_slug
+from ..util import is_http_url, slugify, unique_slug
 
 log = logging.getLogger("esources.admin")
 bp = Blueprint("admin", __name__, url_prefix="/admin")

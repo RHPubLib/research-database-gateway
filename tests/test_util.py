@@ -1,5 +1,5 @@
 """Tests for util.py — slug generation, CIDR parsing, URL validation."""
-from util import (ip_in_cidrs, is_http_url, parse_cidrs, slugify,
+from esources.util import (ip_in_cidrs, is_http_url, parse_cidrs, slugify,
                   unique_slug)
 
 

@@ -19,11 +19,11 @@ from flask import Flask, render_template
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from config import Config, load_config
-from crypto import VendorCrypto
-from papi_client import PapiClient
-from ratelimit import RateLimiter
-from store import Store
+from .config import Config, load_config
+from .crypto import VendorCrypto
+from .papi_client import PapiClient
+from .ratelimit import RateLimiter
+from .store import Store
 
 logging.basicConfig(
     level=logging.INFO,
@@ -48,7 +48,13 @@ class Services:
 
 def create_app(config: Config | None = None) -> Flask:
     cfg = config or load_config()
-    app = Flask(__name__)
+    import os
+    _REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    app = Flask(
+        __name__,
+        template_folder=os.path.join(_REPO_ROOT, "templates"),
+        static_folder=os.path.join(_REPO_ROOT, "static"),
+    )
 
     # --- Trust exactly TRUSTED_PROXY_HOPS proxies for X-Forwarded-* ---------
     # x_for drives request.remote_addr (the on-campus check). Verify the hop

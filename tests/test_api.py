@@ -4,7 +4,7 @@ These cover the pure-function projection: confirm we expose only
 public-safe fields, never expose vendor credentials, and produce a
 correctly-shaped launch URL pointing at the gateway.
 """
-from routes.api import _PUBLIC_FIELDS, _to_public
+from esources.routes.api import _PUBLIC_FIELDS, _to_public
 
 
 def _full_record() -> dict:

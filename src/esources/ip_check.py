@@ -21,7 +21,7 @@ trustworthy client IP. This module just tests it against the CIDR list.
 """
 from __future__ import annotations
 
-from util import ip_in_cidrs
+from .util import ip_in_cidrs
 
 
 def client_ip(request) -> str:

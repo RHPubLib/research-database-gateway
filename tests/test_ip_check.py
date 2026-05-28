@@ -5,8 +5,8 @@ the tests use a fake request carrying the resolved IP directly.
 """
 from types import SimpleNamespace
 
-from ip_check import client_ip, is_on_campus
-from util import parse_cidrs
+from esources.ip_check import client_ip, is_on_campus
+from esources.util import parse_cidrs
 
 CIDRS = parse_cidrs("198.51.100.0/24, 203.0.113.7")
 

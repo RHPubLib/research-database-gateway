@@ -103,16 +103,50 @@ End-to-end (see the plan's verification section for the full list):
 - **Admin** — `@rhpl.org` can CRUD; other domains are rejected.
 - **Bookmark** — `/esources?Target=<legacy id>` redirects to `/go/<slug>`.
 
+## Repo layout
+
+```
+.
+├── AGENTS.md             # rules any AI coding agent must follow in this repo
+├── Dockerfile            # Cloud Run container image
+├── deploy.sh             # Cloud Build + Cloud Run deploy
+├── pyproject.toml        # Package metadata and runtime deps
+├── .env.example          # Configuration reference (copy to .env locally)
+├── .gitleaks.toml        # Custom rules for the secret scanner
+├── .github/workflows/    # CI: sensitive-content scan on push and PR
+├── src/esources/         # Flask application package
+│   ├── main.py           # app factory, gunicorn entry point
+│   ├── config.py         # env-var loading
+│   ├── papi_client.py    # Polaris PAPI auth client
+│   ├── gateway.py        # pure access-decision function
+│   ├── crypto.py         # Fernet vendor-credential encryption
+│   ├── ratelimit.py      # Firestore-backed login throttle
+│   ├── ip_check.py       # on-campus detection
+│   ├── store.py          # Firestore accessors
+│   ├── util.py           # pure helpers
+│   └── routes/           # Flask blueprints: public, admin, api
+├── templates/            # Jinja templates
+├── static/               # CSS
+├── tests/                # pytest suite (53 tests)
+├── infra/                # firebase.json, firestore.rules, setup-gcp.sh
+├── migrate/              # one-time data migration scripts from Polaris
+└── docs/                 # Wix integration notes and other long-form docs
+```
+
 ## Local development
 
 ```
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt pytest
+.venv/bin/pip install -e .[dev]
 .venv/bin/python -m pytest -q
 ```
-Running the full app locally needs a `.env` and Firestore access
-(`gcloud auth application-default login`); then `.venv/bin/python app.py`
-serves on `http://127.0.0.1:8080`.
+
+Running the full app locally needs a `.env` (copy from `.env.example`) and
+Firestore access (`gcloud auth application-default login`); then:
+
+```
+.venv/bin/gunicorn esources.main:app --bind 127.0.0.1:8080
+```
 
 ## Operations
 
