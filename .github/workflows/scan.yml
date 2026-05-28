@@ -22,8 +22,9 @@ jobs:
       - name: Install gitleaks CLI
         run: |
           set -euo pipefail
-          VERSION=$(curl -fsSL https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
-            | grep -m1 '"tag_name"' | cut -d'"' -f4 | sed 's/^v//')
+          curl -fsSL -o /tmp/release.json https://api.github.com/repos/gitleaks/gitleaks/releases/latest
+          VERSION=$(jq -r .tag_name /tmp/release.json | sed 's/^v//')
+          echo "Installing gitleaks v${VERSION}"
           curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" \
             -o /tmp/gitleaks.tgz
           tar -xzf /tmp/gitleaks.tgz -C /tmp gitleaks
