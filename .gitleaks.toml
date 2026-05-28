@@ -58,3 +58,27 @@ paths = [
   '''AGENTS\.md''',  # rule file itself enumerates forbidden patterns
   '''\.gitleaks\.toml''',  # config file documents its own rules
 ]
+
+[[rules]]
+id = "rhpl-vendor-pass-style"
+description = "redacted vendor-credential format"
+regex = '''REDACTED-PATTERN'''
+tags = ["rhpl", "vendor-credential"]
+
+[[rules]]
+id = "rhpl-ebsco-customer-id"
+description = "RHPL EBSCO customer ID REDACTED"
+regex = '''\bREDACTED\b'''
+tags = ["rhpl", "vendor-id"]
+
+[[rules]]
+id = "rhpl-gale-institution-u"
+description = "RHPL Gale institution u-parameter (REDACTED)"
+regex = '''\bREDACTED\b'''
+tags = ["rhpl", "vendor-id"]
+
+[[rules]]
+id = "rhpl-locpword-REDACTED"
+description = "Likely-real vendor secret previously appearing as example"
+regex = '''\bREDACTED\b'''
+tags = ["rhpl", "vendor-credential"]
