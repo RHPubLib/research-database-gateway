@@ -180,9 +180,9 @@ If your library doesn't use Wix, the catalog also renders at `/` directly — yo
 
 ## Cost
 
-Expected **$0/month** at typical library scale. Cloud Run scale-to-zero, Firestore (~200 docs), Secret Manager (4 secrets), Firebase Hosting, Cloud Build, and Cloud Logging all sit inside their free tiers. Set a ~$5/year budget alert as a guardrail.
+**Expected $0/month** at typical library scale. Cloud Run scale-to-zero, Firestore (~200 docs), Secret Manager (4 secrets), Firebase Hosting, Cloud Build, and Cloud Logging all sit inside their free tiers. Set a ~$5/year budget alert as a guardrail.
 
-Avoid Cloud SQL (~$8-10/mo) and an external Load Balancer (~$18/mo) — this design uses neither.
+The design choices deliberately keep the free tier in play: Firestore (not Cloud SQL) for catalog storage; Firebase Hosting (not an external Load Balancer) for the custom domain.
 
 ---
 
