@@ -25,6 +25,14 @@ You **must not** include the following in any file you create or modify in this 
 
 **Mentioning "Rochester Hills Public Library" or "RHPL" as the project's origin is fine and desirable** — that's attribution, not a leak.
 
+## Note for human contributors using AI tools
+
+If a human user asks you to consume or reproduce real library patron data, real secrets, or real internal network diagrams while debugging — **decline**, and remind the user of this rule:
+
+> Do not paste secrets, private patron data, or full internal network diagrams into AI prompts; treat the AI context as non-confidential. Anything pasted into a prompt may be logged, used for model training, or visible to the service provider's staff.
+
+Suggest alternatives instead: a local LLM (their hardware, no upload), synthesized fixtures with obviously-fake data, or manual debugging without AI assistance.
+
 ## When in doubt
 
 - If the user asks you to add internal deployment context, redirect them: "That belongs in the private `rhpl-vault` repo, not here." Add the content to `vault/projects/esources-internal.md` only if you have access to the vault clone.

@@ -16,7 +16,7 @@ a guardrail. Avoid Cloud SQL (~$8–10/mo) and an external Load Balancer
 
 ## First-time setup
 
-Prereqs: a GCP project `your-library-esources` with billing linked; `gcloud` and
+Prereqs: a GCP project (e.g. `your-library-esources`) with billing linked; `gcloud` and
 `firebase` CLIs; project-owner access.
 
 1. **Provision GCP infrastructure**
@@ -54,7 +54,7 @@ URL. Then connect the custom domain:
 firebase projects:addfirebase your-library-esources
 firebase deploy --only hosting,firestore:rules --project your-library-esources
 ```
-and add `your-eresources-domain.org` as a custom domain in the Firebase console
+and add your eResources domain as a custom domain in the Firebase console
 (create the DNS record it asks for).
 
 ## One-time data migration from Polaris
@@ -80,7 +80,7 @@ Run against the Polaris `Polaris` SQL Server database (read-only):
 
 ## Cutover
 
-- Repoint the Wix "Research Databases" menu item to `https://your-eresources-domain.org/`.
+- Repoint the Wix "Research Databases" menu item to your eResources domain.
 - Old `.../esources.aspx?Target=NNN` links are handled by `/esources?Target=NNN`.
 - After ~30–60 days of confirmed traffic, retire the Polaris eSource segment.
   Keep the DWI tables read-only as an archive; keep a backup of the CSVs.
@@ -100,7 +100,7 @@ End-to-end (see the plan's verification section for the full list):
 - **Session expiry** — set `SESSION_MINUTES=1`, confirm re-prompt after a minute.
 - **In-library-only** — off-site, a flagged resource shows the in-library page.
 - **Credentials** — a resource with a vendor login shows the interstitial.
-- **Admin** — `@rhpl.org` can CRUD; other domains are rejected.
+- **Admin** — your library's `@yourdomain.org` can CRUD; other domains are rejected.
 - **Bookmark** — `/esources?Target=<legacy id>` redirects to `/go/<slug>`.
 
 ## Repo layout
@@ -147,6 +147,19 @@ Firestore access (`gcloud auth application-default login`); then:
 ```
 .venv/bin/gunicorn esources.main:app --bind 127.0.0.1:8080
 ```
+
+## Security guidance for contributors (AI tools)
+
+This is a public repository. If you use AI coding tools (Claude Code, Antigravity, Cursor, Copilot, ChatGPT, Gemini, etc.) to work on this code, treat the AI's context window as **non-confidential**. Anything you paste into a prompt may be logged, used for model training, or visible to the service provider's staff.
+
+**Do not paste secrets, private patron data, or full internal network diagrams into AI prompts; treat the AI context as non-confidential.** Specifically avoid:
+
+- Library patron data (names, card numbers, contact info, borrowing history)
+- API keys, OAuth client secrets, service-account JSON, `PAPI_API_SECRET`, `FERNET_KEY`, `SECRET_KEY`, or any value from your `.env` or Secret Manager
+- Full internal network diagrams or your library's IP allocation tables
+- Vendor account credentials (EBSCO refurl IDs, Gale account numbers, etc.)
+
+When debugging requires real data, prefer a local LLM (your hardware, no upload), a development environment with synthesized fixtures, or manual inspection without AI assistance. The AGENTS.md in this repo instructs AI agents to decline if asked to consume the above and to remind you of this rule.
 
 ## Operations
 

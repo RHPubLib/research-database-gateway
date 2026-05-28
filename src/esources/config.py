@@ -1,4 +1,4 @@
-"""Configuration for the RHPL eResources service.
+"""Configuration for the eResources service.
 
 All settings come from environment variables. In production Cloud Run injects
 them: plain config via --set-env-vars, secrets via --set-secrets (Secret
@@ -35,17 +35,17 @@ class Config:
     # Staff admin OAuth
     google_client_id: str = ""
     google_client_secret: str = ""
-    admin_email_domain: str = "rhpl.org"
+    admin_email_domain: str = ""
 
     # Vendor-password encryption
     fernet_key: str = ""
 
     # Polaris PAPI
-    papi_base_url: str = "https://your-polaris-server/PAPIService"
+    papi_base_url: str = ""
     papi_lang_id: str = "1033"
     papi_app_id: str = "100"
     papi_org_id: str = "3"
-    papi_api_access_id: str = "localpull"
+    papi_api_access_id: str = ""
     papi_api_secret: str = ""
 
     # Login rate limiting
@@ -87,13 +87,13 @@ def load_config() -> Config:
         trusted_proxy_hops=_int("TRUSTED_PROXY_HOPS", 2),
         google_client_id=_require("GOOGLE_CLIENT_ID"),
         google_client_secret=_require("GOOGLE_CLIENT_SECRET"),
-        admin_email_domain=os.environ.get("ADMIN_EMAIL_DOMAIN", "rhpl.org").strip().lower(),
+        admin_email_domain=_require("ADMIN_EMAIL_DOMAIN").strip().lower(),
         fernet_key=_require("FERNET_KEY"),
-        papi_base_url=os.environ.get("PAPI_BASE_URL", "https://your-polaris-server/PAPIService").rstrip("/"),
+        papi_base_url=_require("PAPI_BASE_URL").rstrip("/"),
         papi_lang_id=os.environ.get("PAPI_LANG_ID", "1033").strip(),
         papi_app_id=os.environ.get("PAPI_APP_ID", "100").strip(),
         papi_org_id=os.environ.get("PAPI_ORG_ID", "3").strip(),
-        papi_api_access_id=os.environ.get("PAPI_API_ACCESS_ID", "localpull").strip(),
+        papi_api_access_id=_require("PAPI_API_ACCESS_ID").strip(),
         papi_api_secret=_require("PAPI_API_SECRET"),
         login_rate_max=_int("LOGIN_RATE_MAX", 5),
         login_rate_window_min=_int("LOGIN_RATE_WINDOW_MIN", 15),

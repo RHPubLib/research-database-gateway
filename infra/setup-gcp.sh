@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-PROJECT=${PROJECT:-your-library-esources}
+PROJECT=${PROJECT:?set PROJECT}
 REGION=${REGION:-us-central1}
 SA_NAME=esources-run
 SA_EMAIL="${SA_NAME}@${PROJECT}.iam.gserviceaccount.com"
@@ -83,9 +83,9 @@ Infrastructure ready. Remaining one-time steps (see README.md for detail):
 
 4. Deploy:  ./deploy.sh
 
-5. Connect Firebase Hosting for your-eresources-domain.org:
+5. Connect Firebase Hosting for your eResources domain:
        firebase projects:addfirebase ${PROJECT}
        firebase deploy --only hosting,firestore:rules --project ${PROJECT}
-   then add the custom domain your-eresources-domain.org in the Firebase console.
+   then add your custom domain in the Firebase console.
 ──────────────────────────────────────────────────────────────────────────────
 NEXT
