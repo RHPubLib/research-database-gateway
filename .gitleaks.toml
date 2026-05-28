@@ -36,7 +36,7 @@ tags = ["rhpl", "internal-host"]
 [[rules]]
 id = "rhpl-admin-user"
 description = "RHPL admin/service usernames in deployment context"
-regex = '''\b(youruser|youruser)\b'''
+regex = '''REDACTED-PATTERN'''
 tags = ["rhpl", "internal-user"]
 
 [[rules]]
@@ -54,7 +54,7 @@ tags = ["rhpl", "oauth"]
 [allowlist]
 description = "Paths and patterns that are OK to contain matches"
 paths = [
-  '''README\.md''',  # mentions of your-eresources-domain.org as reference deployment are fine
+  '''README\.md''',  # mentions of databases.rhpl.org as reference deployment are fine
   '''AGENTS\.md''',  # rule file itself enumerates forbidden patterns
   '''\.gitleaks\.toml''',  # config file documents its own rules
 ]
