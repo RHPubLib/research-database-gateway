@@ -1,0 +1,22 @@
+# Secrets and local config — never commit
+.env
+*.env
+!.env.example
+secrets/
+
+# Migration extract files (may contain vendor credentials)
+migrate/extract/
+*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+
+# Local Firestore emulator data
+firestore-debug.log
+firebase-debug.log
+.firebase/

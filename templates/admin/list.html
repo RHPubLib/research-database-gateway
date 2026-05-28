@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}eResources admin{% endblock %}
+{% block content %}
+  <div class="admin-bar">
+    <h1>eResources admin</h1>
+    <div class="admin-who">
+      <span class="muted">{{ user.email }}</span>
+      <a href="{{ url_for('admin.logout') }}">Sign out</a>
+    </div>
+  </div>
+
+  <p class="admin-actions">
+    <a class="btn" href="{{ url_for('admin.new') }}">+ Add database</a>
+    <a href="{{ url_for('admin.categories') }}">Manage categories</a>
+    <span class="muted">{{ records|length }} total</span>
+  </p>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Name</th><th>Categories</th><th>Slug</th>
+        <th>Legacy ID</th><th>Flags</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+        <tr class="{{ 'row-disabled' if not r.enabled }}">
+          <td><a href="{{ url_for('admin.edit', doc_id=r.id) }}">{{ r.name }}</a></td>
+          <td>
+            {% for c in r.categories %}{{ c.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+          </td>
+          <td><code>{{ r.slug }}</code></td>
+          <td>{{ r.legacy_entry_id if r.legacy_entry_id is not none else '—' }}</td>
+          <td>
+            {% if not r.enabled %}<span class="badge badge-off">Hidden</span>{% endif %}
+            {% if r.remote_access == 3 %}<span class="badge">In-library</span>{% endif %}
+            {% if r.in_house_access == 2 %}<span class="badge">Card-in-library</span>{% endif %}
+            {% if r.blocked_patron_code_ids %}<span class="badge">Eligibility</span>{% endif %}
+            {% if r.launch_params %}<span class="badge">Params</span>{% endif %}
+          </td>
+          <td class="actions">
+            <a href="{{ url_for('admin.edit', doc_id=r.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin.toggle', doc_id=r.id) }}" class="inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="link">{{ 'Hide' if r.enabled else 'Show' }}</button>
+            </form>
+            <form method="post" action="{{ url_for('admin.delete', doc_id=r.id) }}" class="inline"
+                  onsubmit="return confirm('Delete “{{ r.name }}”? This cannot be undone.');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="link danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6">No databases yet. Use “Add database” to create the first one.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

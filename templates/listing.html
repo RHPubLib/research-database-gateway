@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Research Databases{% endblock %}
+{% block content %}
+  <h1>Research Databases</h1>
+
+  {% if not groups %}
+    <p>No databases are available right now. Please check back soon.</p>
+  {% endif %}
+
+  {% for category, items in groups %}
+    <section class="db-group">
+      <h2>{{ category }}</h2>
+      <ul class="db-list">
+        {% for r in items %}
+          <li class="db-item">
+            <a class="db-name" href="{{ url_for('public.go', slug=r.slug) }}">{{ r.name }}</a>
+            {% if r.remote_access == 3 %}<span class="badge">In-library only</span>{% endif %}
+            {% if r.blocked_patron_code_ids %}<span class="badge">Eligibility required</span>{% endif %}
+            {% if r.description %}<p class="db-desc">{{ r.description }}</p>{% endif %}
+            {% if r.message %}<p class="db-note">{{ r.message }}</p>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endfor %}
+{% endblock %}

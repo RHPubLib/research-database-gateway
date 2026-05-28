@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Staff sign-in{% endblock %}
+{% block content %}
+  <div class="card">
+    <h1>eResources admin</h1>
+    <p>Manage the Research Databases catalog. RHPL staff only.</p>
+    {% if error %}<div class="flash flash-error">{{ error }}</div>{% endif %}
+    <a class="btn" href="{{ url_for('admin.login') }}">Sign in with Google</a>
+  </div>
+{% endblock %}

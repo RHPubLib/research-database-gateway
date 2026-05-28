@@ -1,0 +1,60 @@
+title = "RHPL eResources public-repo content scanner"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "rhpl-internal-ip-10-5"
+description = "internal network range (redacted)"
+regex = '''REDACTED-PATTERN'''
+tags = ["rhpl", "internal-network"]
+
+[[rules]]
+id = "rhpl-external-ip-216-150-230"
+description = "external CIDR (redacted)"
+regex = '''REDACTED-PATTERN'''
+tags = ["rhpl", "internal-cidr"]
+
+[[rules]]
+id = "rhpl-godaddy-host-ip"
+description = "GoDaddy hosting IP from older infra references"
+regex = '''\b132\.148\.43\.54\b'''
+tags = ["rhpl", "internal-host"]
+
+[[rules]]
+id = "rhpl-internal-hostname"
+description = "internal server hostname scheme (redacted)"
+regex = '''REDACTED-PATTERN'''
+tags = ["rhpl", "internal-host"]
+
+[[rules]]
+id = "rhpl-localai-host"
+description = "RHPL on-prem AI server hostnames"
+regex = '''REDACTED-PATTERN'''
+tags = ["rhpl", "internal-host"]
+
+[[rules]]
+id = "rhpl-admin-user"
+description = "RHPL admin/service usernames in deployment context"
+regex = '''\b(youruser|youruser)\b'''
+tags = ["rhpl", "internal-user"]
+
+[[rules]]
+id = "rhpl-polaris-orgid-branch-names"
+description = "RHPL-specific Polaris branch names that appear in OrgID enumerations"
+regex = '''\b(Avon on the Lake|Avon Tower|Danish Village|Bellbrook|Waltonwood|Kids'? Bus)\b'''
+tags = ["rhpl", "internal-orgid"]
+
+[[rules]]
+id = "rhpl-google-client-id-prefix"
+description = "The specific Google OAuth client ID prefix used by RHPL Web Services"
+regex = '''REDACTED-PATTERN'''
+tags = ["rhpl", "oauth"]
+
+[allowlist]
+description = "Paths and patterns that are OK to contain matches"
+paths = [
+  '''README\.md''',  # mentions of your-eresources-domain.org as reference deployment are fine
+  '''AGENTS\.md''',  # rule file itself enumerates forbidden patterns
+  '''\.gitleaks\.toml''',  # config file documents its own rules
+]

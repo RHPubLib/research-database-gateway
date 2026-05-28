@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sign in · {{ resource.name }}{% endblock %}
+{% block content %}
+  <div class="card">
+    <h1>Library card sign-in</h1>
+    <p>
+      To use <strong>{{ resource.name }}</strong> from outside the library,
+      please verify your Rochester Hills Public Library card.
+    </p>
+
+    {% if error %}<div class="flash flash-error">{{ error }}</div>{% endif %}
+
+    <form method="post" action="{{ url_for('public.login', slug=resource.slug) }}"
+          autocomplete="off" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <label for="barcode">Library card number</label>
+      <input type="text" id="barcode" name="barcode" inputmode="numeric"
+             autocomplete="off" required autofocus>
+
+      <label for="pin">PIN</label>
+      <input type="password" id="pin" name="pin" autocomplete="off" required>
+
+      <button type="submit">Sign in &amp; continue</button>
+    </form>
+
+    <p class="muted">
+      Don't know your PIN? Call us or visit any RHPL location and staff can help.
+    </p>
+  </div>
+{% endblock %}

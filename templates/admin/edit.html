@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% set r = record or {} %}
+{% set fresh = record is none %}
+{% set is_new = doc_id is none %}
+{% block title %}{{ 'Add database' if is_new else 'Edit database' }}{% endblock %}
+{% block content %}
+  <div class="admin-bar">
+    <h1>{{ 'Add database' if is_new else 'Edit database' }}</h1>
+    <div class="admin-who"><a href="{{ url_for('admin.index') }}">&larr; All databases</a></div>
+  </div>
+
+  <form method="post" class="admin-form"
+        action="{{ url_for('admin.new') if is_new else url_for('admin.edit', doc_id=doc_id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <label for="name">Name <span class="req">*</span></label>
+    <input type="text" id="name" name="name" required value="{{ r.get('name', '') }}">
+
+    <label for="destination_url">Destination URL <span class="req">*</span></label>
+    <input type="url" id="destination_url" name="destination_url" required
+           placeholder="https://..." value="{{ r.get('destination_url', '') }}">
+    <p class="hint">Base URL only &mdash; the launch parameters below are appended as a query string at redirect time.</p>
+
+    {% set _selected_lc = selected_categories|map('lower')|list %}
+    {% set _selected_set = selected_categories|map('lower')|map('trim')|list %}
+    <fieldset class="categories">
+      <legend>Categories</legend>
+      <p class="hint" style="margin-top:0">
+        Click a chip to attach or detach a category. Order is alphabetical
+        everywhere; nothing else to set. Manage the full list (rename,
+        delete) at <a href="{{ url_for('admin.categories') }}">Categories</a>.
+      </p>
+      <div class="cat-chips" id="catChips">
+        {# Render union of known + currently-selected so a chip for a
+           "just-added" category survives a validation re-render. #}
+        {% set _all_names = (known_category_names + selected_categories)|unique|list %}
+        {% for name in _all_names|sort(case_sensitive=false) %}
+          {% set _on = name|lower in _selected_lc %}
+          <button type="button" class="cat-chip {% if _on %}in-use{% endif %}"
+                  data-name="{{ name }}"
+                  aria-pressed="{{ 'true' if _on else 'false' }}">{{ name }}</button>
+        {% endfor %}
+      </div>
+      <div id="catHidden">
+        {% for name in selected_categories %}
+          <input type="hidden" name="category" value="{{ name }}">
+        {% endfor %}
+      </div>
+      <div class="cat-add">
+        <input type="text" id="catNewName" placeholder="+ Add new category"
+               aria-label="New category name" maxlength="60">
+        <button type="button" id="catAddBtn">Add</button>
+      </div>
+    </fieldset>
+    <script>
+    (function () {
+      "use strict";
+      var chipBox = document.getElementById("catChips");
+      var hiddenBox = document.getElementById("catHidden");
+      var addInput = document.getElementById("catNewName");
+      var addBtn = document.getElementById("catAddBtn");
+      if (!chipBox || !hiddenBox) return;
+
+      function lc(s) { return String(s || "").trim().toLowerCase(); }
+
+      function selectedNames() {
+        var out = [];
+        hiddenBox.querySelectorAll('input[name="category"]').forEach(function (i) {
+          out.push(i.value);
+        });
+        return out;
+      }
+
+      function setSelected(names) {
+        // Replace hidden inputs with the new set, alphabetised.
+        names = names.slice().sort(function (a, b) {
+          return lc(a).localeCompare(lc(b));
+        });
+        hiddenBox.innerHTML = names.map(function (n) {
+          var v = String(n).replace(/"/g, "&quot;");
+          return '<input type="hidden" name="category" value="' + v + '">';
+        }).join("");
+      }
+
+      function refreshChips() {
+        var sel = {};
+        selectedNames().forEach(function (n) { sel[lc(n)] = true; });
+        chipBox.querySelectorAll(".cat-chip").forEach(function (b) {
+          var on = sel[lc(b.getAttribute("data-name"))];
+          b.classList.toggle("in-use", !!on);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+      }
+
+      function toggle(name) {
+        var current = selectedNames();
+        var key = lc(name);
+        var idx = current.map(lc).indexOf(key);
+        if (idx >= 0) {
+          current.splice(idx, 1);
+        } else {
+          current.push(name);
+        }
+        setSelected(current);
+        refreshChips();
+      }
+
+      function addNew() {
+        var name = (addInput.value || "").trim();
+        if (!name) return;
+        // If a chip for this name (case-insensitive) already exists, just
+        // toggle it on. Otherwise, create a new chip + select it.
+        var existing = null;
+        chipBox.querySelectorAll(".cat-chip").forEach(function (b) {
+          if (lc(b.getAttribute("data-name")) === lc(name)) existing = b;
+        });
+        if (!existing) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "cat-chip";
+          btn.setAttribute("data-name", name);
+          btn.setAttribute("aria-pressed", "false");
+          btn.textContent = name;
+          // Insert alphabetically.
+          var siblings = Array.prototype.slice.call(
+            chipBox.querySelectorAll(".cat-chip"));
+          var inserted = false;
+          for (var i = 0; i < siblings.length; i++) {
+            if (lc(siblings[i].getAttribute("data-name")) > lc(name)) {
+              chipBox.insertBefore(btn, siblings[i]);
+              inserted = true;
+              break;
+            }
+          }
+          if (!inserted) chipBox.appendChild(btn);
+        }
+        var current = selectedNames();
+        if (current.map(lc).indexOf(lc(name)) < 0) current.push(name);
+        setSelected(current);
+        refreshChips();
+        addInput.value = "";
+        addInput.focus();
+      }
+
+      chipBox.addEventListener("click", function (e) {
+        var btn = e.target.closest(".cat-chip");
+        if (!btn) return;
+        toggle(btn.getAttribute("data-name") || "");
+      });
+      addBtn.addEventListener("click", addNew);
+      addInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          addNew();
+        }
+      });
+
+      refreshChips();
+    })();
+    </script>
+
+    <div class="form-row">
+      <div>
+        <label for="slug">URL slug</label>
+        <input type="text" id="slug" name="slug" value="{{ r.get('slug', '') }}"
+               placeholder="(auto from name)">
+      </div>
+      <div>
+        <label for="legacy_entry_id">Legacy Polaris ID</label>
+        <input type="text" id="legacy_entry_id" name="legacy_entry_id" inputmode="numeric"
+               value="{{ r.get('legacy_entry_id', '') if r.get('legacy_entry_id') is not none else '' }}">
+      </div>
+    </div>
+    <p class="hint">Legacy ID = the old <code>?Target=</code> number; keeps old bookmarks working. Leave the slug blank to auto-generate it.</p>
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="2">{{ r.get('description', '') }}</textarea>
+
+    <label for="message">Public note</label>
+    <textarea id="message" name="message" rows="2">{{ r.get('message', '') }}</textarea>
+
+    <fieldset class="access">
+      <legend>Access</legend>
+      <div class="form-row">
+        <div>
+          <label for="in_house_access">In-library</label>
+          <select id="in_house_access" name="in_house_access">
+            <option value="1" {% if r.get('in_house_access') == 1 %}selected{% endif %}>1 &mdash; Open (no auth)</option>
+            <option value="2" {% if r.get('in_house_access') == 2 %}selected{% endif %}>2 &mdash; Card required</option>
+            <option value="3" {% if not r.get('in_house_access') or r.get('in_house_access') == 3 %}selected{% endif %}>3 &mdash; IP-only (default)</option>
+          </select>
+        </div>
+        <div>
+          <label for="remote_access">Off-site</label>
+          <select id="remote_access" name="remote_access">
+            <option value="1" {% if r.get('remote_access') == 1 %}selected{% endif %}>1 &mdash; Open (no auth)</option>
+            <option value="2" {% if not r.get('remote_access') or r.get('remote_access') == 2 %}selected{% endif %}>2 &mdash; Card required (default)</option>
+            <option value="3" {% if r.get('remote_access') == 3 %}selected{% endif %}>3 &mdash; Blocked off-site</option>
+          </select>
+        </div>
+        <div>
+          <label for="transfer_type">Transfer type</label>
+          <select id="transfer_type" name="transfer_type">
+            <option value="1" {% if r.get('transfer_type') == 1 %}selected{% endif %}>1 &mdash; GET</option>
+            <option value="2" {% if not r.get('transfer_type') or r.get('transfer_type') == 2 %}selected{% endif %}>2 &mdash; (default)</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint">Values mirror Polaris. Off-site = 3 shows "In-library only"; 2 forces card login; 1 lets anyone through.</p>
+
+      <label for="blocked_patron_code_ids_text">Blocked PatronCodeIDs (off-site / card-authed)</label>
+      <input type="text" id="blocked_patron_code_ids_text" name="blocked_patron_code_ids_text"
+             value="{{ blocked_codes_text }}" placeholder="e.g. 2, 4, 17">
+      <p class="hint">Comma-separated codes to BLOCK (Polaris UI: "patron codes to restrict"). Empty = no patron-type restriction. Enforced only after card login; in-library IP grants still pass through.</p>
+    </fieldset>
+
+    <fieldset class="vendor">
+      <legend>Launch parameters (encrypted)</legend>
+      <label for="launch_params_text">One <code>key=value</code> per line</label>
+      <textarea id="launch_params_text" name="launch_params_text" rows="5"
+                autocomplete="off" placeholder="e.g.&#10;db=BioRC&#10;password=example-pass&#10;user=your-customer-id">{{ launch_params_text }}</textarea>
+      {% if not is_new and r.get('launch_params') %}
+        <p class="hint">Params are saved (encrypted). Leave blank to keep them, retype to replace, or:</p>
+        <label class="check">
+          <input type="checkbox" name="clear_launch_params"> Remove all saved launch parameters
+        </label>
+      {% else %}
+        <p class="hint">Appended as a query string when the patron is redirected. Stored encrypted with FERNET_KEY.</p>
+      {% endif %}
+    </fieldset>
+
+    <label class="check">
+      <input type="checkbox" name="enabled"
+             {% if r.get('enabled') or fresh %}checked{% endif %}>
+      Enabled &mdash; visible on the listing
+    </label>
+
+    <div class="form-buttons">
+      <button type="submit">{{ 'Add database' if is_new else 'Save changes' }}</button>
+      <a class="btn-cancel" href="{{ url_for('admin.index') }}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

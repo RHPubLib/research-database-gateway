@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+  <div class="admin-bar">
+    <h1>Categories</h1>
+    <div class="admin-who"><a href="{{ url_for('admin.index') }}">&larr; All databases</a></div>
+  </div>
+
+  <p class="hint">
+    These are the categories in use across the catalog. Renaming a category
+    updates every record that references it. Deleting removes it from every
+    record (records with no other category fall into the synthesized
+    &ldquo;Databases&rdquo; group). Add a new category by attaching it to a
+    record from the <a href="{{ url_for('admin.index') }}">All databases</a>
+    list.
+  </p>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Records</th>
+        <th>Rename</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for name, count in categories %}
+        <tr>
+          <td>{{ name }}</td>
+          <td>{{ count }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.categories_rename') }}" class="inline-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="old" value="{{ name }}">
+              <input type="text" name="new" placeholder="New name" required maxlength="60">
+              <button type="submit">Rename</button>
+            </form>
+          </td>
+          <td>
+            <form method="post" action="{{ url_for('admin.categories_delete') }}" class="inline"
+                  onsubmit="return confirm('Remove &ldquo;{{ name }}&rdquo; from all {{ count }} record{{ 's' if count != 1 else '' }}? This cannot be undone.');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="name" value="{{ name }}">
+              <button type="submit" class="link danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="4">No categories yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

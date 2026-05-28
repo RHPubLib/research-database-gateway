@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Connecting to {{ name }}…</title>
+  <!-- Some vendors (HeritageQuest, EBSCO Community.aspx, etc.) auth by
+       checking the HTTP Referer header. Match what Polaris's classic-PAC
+       esourceview.aspx does so vendors see a normal Referer from our
+       launch page. Don't change this to "no-referrer" without testing
+       every vendor that uses Referer-based auth. -->
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; color: #333; }
+    .msg { max-width: 30rem; }
+    noscript p { color: #b00; }
+  </style>
+</head>
+<body onload="document.forms[0].submit();">
+  <form action="{{ action_url }}" method="post" autocomplete="off">
+    {% for key, value in params %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+    <div class="msg">
+      <p>Connecting to {{ name }}…</p>
+      <noscript>
+        <p>Your browser blocked the automatic redirect.</p>
+        <button type="submit">Click here to continue</button>
+      </noscript>
+    </div>
+  </form>
+</body>
+</html>

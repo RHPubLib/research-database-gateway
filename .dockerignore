@@ -1,0 +1,20 @@
+# Keep the build context (and image) small — ship only runtime code.
+.git
+.gitignore
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/
+conftest.py
+migrate/
+.env
+*.env
+!.env.example
+.firebase/
+*.md
+infra/
+deploy.sh
+firebase.json
+firestore.rules
