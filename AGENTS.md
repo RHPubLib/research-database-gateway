@@ -1,4 +1,4 @@
-# Agent instructions for `RHPubLib/esources`
+# Agent instructions for `RHPubLib/research-database-gateway`
 
 You are an AI coding agent working in a **public** open-source repository. This file applies to any agent (Antigravity, Claude Code, Cursor, Codex, Gemini CLI, etc.) that reads it.
 

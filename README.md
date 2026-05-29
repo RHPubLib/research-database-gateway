@@ -1,4 +1,4 @@
-# eResources service
+# Research Database Gateway
 
 **Replaces the Polaris classic-PAC eSources feature.** A small Cloud Run app + Firestore catalog + Wix-embeddable patron page that gives staff a modern admin UI for managing subscription databases and gives patrons the same on-campus IP bypass, library-card sign-in, and in-library-only access controls they're used to — without depending on the classic PAC.
 
@@ -16,11 +16,11 @@ Built by Rochester Hills Public Library (RHPL). Reference deployment lives at `d
 
 ## What patrons see
 
-The patron-facing page lives on Wix (or wherever your library hosts its public site). The eResources service renders a Wix-embeddable catalog via an iframe so it picks up your site's branding automatically while staying always-in-sync with what staff edit on the back end.
+The patron-facing page lives on Wix (or wherever your library hosts its public site). Research Database Gateway renders a Wix-embeddable catalog via an iframe so it picks up your site's branding automatically while staying always-in-sync with what staff edit on the back end.
 
-![Wix page embedding the eResources catalog](screenshots/wix-databases-page.png)
+![Wix page embedding the catalog](screenshots/wix-databases-page.png)
 
-When a patron clicks **Visit** on a database card, the request goes to the eResources access gate. From there:
+When a patron clicks **Visit** on a database card, the request goes to the access gate. From there:
 
 - **On a library Wi-Fi or wired network** → request bypasses authentication and goes straight to the database (just like classic PAC did with the in-building IP check).
 - **From home, work, or a phone on cellular**, for any database that requires it → patron is asked to verify their library card and PIN:
@@ -227,11 +227,11 @@ firebase projects:addfirebase your-library-esources
 firebase deploy --only hosting,firestore:rules --project your-library-esources
 ```
 
-and add your eResources domain as a custom domain in the Firebase console (create the DNS record it asks for).
+and add your gateway domain as a custom domain in the Firebase console (create the DNS record it asks for).
 
 ## Cutover
 
-- Repoint the "Research Databases" menu on your patron site to your eResources domain.
+- Repoint the "Research Databases" menu on your patron site to your gateway domain.
 - Old `.../esources.aspx?Target=NNN` links are handled by `/esources?Target=NNN`.
 - After ~30-60 days of confirmed traffic, retire the Polaris eSource segment. Keep the DWI tables read-only as an archive; keep a backup of the CSVs.
 
