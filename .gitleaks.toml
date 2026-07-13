@@ -1,66 +1,18 @@
-title = "RHPL eResources public-repo content scanner"
+title = "Public-repo content scanner"
 
 [extend]
 useDefault = true
 
-[[rules]]
-id = "rhpl-internal-ip-10-5"
-description = "internal network range (redacted)"
-regex = '''REDACTED-PATTERN'''
-tags = ["rhpl", "internal-network"]
-
-[[rules]]
-id = "rhpl-external-ip-216-150-230"
-description = "external CIDR (redacted)"
-regex = '''REDACTED-PATTERN'''
-tags = ["rhpl", "internal-cidr"]
-
-[[rules]]
-id = "rhpl-godaddy-host-ip"
-description = "GoDaddy hosting IP from older infra references"
-regex = '''\b132\.148\.43\.54\b'''
-tags = ["rhpl", "internal-host"]
-
-[[rules]]
-id = "rhpl-internal-hostname"
-description = "internal server hostname scheme (redacted)"
-regex = '''REDACTED-PATTERN'''
-tags = ["rhpl", "internal-host"]
-
-[[rules]]
-id = "rhpl-localai-host"
-description = "RHPL on-prem AI server hostnames"
-regex = '''REDACTED-PATTERN'''
-tags = ["rhpl", "internal-host"]
-
-[[rules]]
-id = "rhpl-admin-user"
-description = "RHPL admin/service usernames in deployment context"
-regex = '''REDACTED-PATTERN'''
-tags = ["rhpl", "internal-user"]
-
-[[rules]]
-id = "rhpl-polaris-orgid-branch-names"
-description = "RHPL-specific Polaris branch names that appear in OrgID enumerations"
-regex = '''\b(Avon on the Lake|Avon Tower|Danish Village|Bellbrook|Waltonwood|Kids'? Bus)\b'''
-tags = ["rhpl", "internal-orgid"]
-
-[[rules]]
-id = "rhpl-google-client-id-prefix"
-description = "The specific Google OAuth client ID prefix used by RHPL Web Services"
-regex = '''REDACTED-PATTERN'''
-tags = ["rhpl", "oauth"]
+# Organization-specific indicator rules (internal IP ranges, hostname schemes,
+# service usernames, vendor-credential formats) are deliberately NOT published
+# in this file — enumerating them here would disclose the very facts they exist
+# to protect. Maintainers apply those rules from a private config at the publish
+# boundary (pre-push hook on the publishing host).
 
 [allowlist]
-description = "Paths and patterns that are OK to contain matches"
+description = "Paths that may legitimately match generic rules"
 paths = [
-  '''README\.md''',  # mentions of databases.rhpl.org as reference deployment are fine
-  '''AGENTS\.md''',  # rule file itself enumerates forbidden patterns
-  '''\.gitleaks\.toml''',  # config file documents its own rules
+  '''README\.md''',
+  '''AGENTS\.md''',
+  '''\.gitleaks\.toml''',
 ]
-
-[[rules]]
-id = "rhpl-vendor-pass-style"
-description = "redacted vendor-credential format"
-regex = '''REDACTED-PATTERN'''
-tags = ["rhpl", "vendor-credential"]

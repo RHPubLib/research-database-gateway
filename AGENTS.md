@@ -15,8 +15,8 @@ You **must not** include the following in any file you create or modify in this 
 | RHPL internal IPs: `your-internal-range` and any `192.168.x.x` / `172.16-31.x.x` | `your-internal-ip` placeholder |
 | RHPL-specific external IPs (e.g. `your-external-cidr` CIDR blocks) | `your-external-cidr` placeholder |
 | RHPL internal hostnames: `your-server`, `your-radius-server`, `your-sql-server*`, `localai`, `your-ai-server` | `your-server` / `your-radius-server` etc. |
-| RHPL admin usernames: `REDACTED-USER`, `REDACTED-USER`, anyone's full `@rhpl.org` email **outside of public commit attribution** | `youruser` placeholder |
-| Real OAuth client IDs (the `REDACTED-...` style prefix) | `your-client-id.apps.googleusercontent.com` |
+| Admin/service usernames (any real ones); anyone's full `@rhpl.org` email **outside of public commit attribution** | `youruser` placeholder |
+| Real OAuth client IDs | `your-client-id.apps.googleusercontent.com` |
 | RHPL's specific GCP project ID `rhpl-esources` in code paths | `your-library-esources` in templates; the real string may appear in this repo's own deployment scripts ONLY where it's clearly RHPL's reference deployment |
 | Polaris RHPL OrgID tables (Avon Tower, OPC, Bookmobile, etc., with their IDs) | "Your library's OrgIDs differ — query Polaris to enumerate yours" |
 | Patron PII (names, card numbers, emails) under any circumstance | Test fixtures with obviously fake data only |
